@@ -1,18 +1,32 @@
+require('dotenv').config();
+
 const express = require('express');
 const bodyParser = require('body-parser');
-const axios = require('axios');
+// const gh = require('./github');
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
-    axios.get('https://api.trackany1.com/api/v1/users').then((result) => {
-        res.status(200).json({
-            result: result.data
-        })
+    res.status(200).json({
+        message: "Please work!"
     })
 })
+
+// app.get('/', async (req, res) => {
+//     try {
+//         await gh.init();
+
+//         await gh.goToUsersGithub('markfaulk350');
+
+//         res.status(200).json({
+//             result: "result"
+//         })
+//     } catch (e) {
+//         console.log(e)
+//     }
+// })
 
 const port = process.env.PORT || 8080;
 
