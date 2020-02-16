@@ -16,6 +16,11 @@ app.get('/', (req, res) => {
 app.get('/github-user-stats/:username', (req, res) => {
     let { username } = req.params;
 
+    // We can send JSON for normal applications where memory is not an issue 
+    // and a string with values seperated by commmas for arduino
+    let { format, weeks } = req.query;
+
+
     axios.get(`https://github.com/${username}`).then((result) => {
         const $ = cheerio.load(result.data);
 
@@ -45,15 +50,33 @@ app.get('/github-user-stats/:username', (req, res) => {
 
         // console.log(calendarGraph.html())
 
-        res.status(200).json({
-            github_username,
-            full_name,
-            num_of_commits_this_year,
-            days
-        });
+        if (format === 'json' || format === undefined) {
+            res.status(200).json({
+                github_username,
+                full_name,
+                num_of_commits_this_year,
+                days
+            });
+        } else if (format === 'string') {
+            // Send all values in text form seperated by commas
+            let stringResponse = `${github_username},${full_name},${num_of_commits_this_year},`;
 
+            if (weeks === undefined || parseInt(weeks) >= 52 || parseInt(weeks) <= 0) {
+                for (let i = days.length; i > 0; i--) {
+                    // stringResponse = stringResponse + `${days[i - 1].count},${days[i - 1].date},`;
+                    stringResponse = stringResponse + `${days[i - 1].count},`;
+                }
+            } else {
+                for (let i = days.length; i > (365 - (parseInt(weeks) * 7)); i--) {
+                    // stringResponse = stringResponse + `${days[i - 1].count},${days[i - 1].date},`;
+                    stringResponse = stringResponse + `${days[i - 1].count},`;
+                }
+            }
+
+            res.status(200).send(stringResponse);
+        }
     }).catch((e) => {
-        // console.log(e);
+        console.log(e);
         res.status(500).json({
             message: 'Something went wrong with Github user stats Web Scraper!',
             error: e
