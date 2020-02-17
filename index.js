@@ -75,7 +75,7 @@ app.get('/github-user-stats/:username', (req, res) => {
             }
 
             stringResponse = stringResponse.slice(0, -1); // Remove last comma
-            stringResponse = stringResponse + "|end|"; // Add newline char so arduino knows when to terminate data read
+            // stringResponse = stringResponse + "|end|"; // Add newline char so arduino knows when to terminate data read
 
             res.status(200).send(stringResponse);
         }
