@@ -60,7 +60,7 @@ app.get('/github-user-stats/:username', (req, res) => {
         } else if (format === 'string') {
             // Send all values in text form seperated by commas
             // let stringResponse = `${github_username},${full_name},${num_of_commits_this_year},`;
-            let stringResponse = '';
+            let stringResponse = '|start|';
 
             if (weeks === undefined || parseInt(weeks) >= 52 || parseInt(weeks) <= 0) {
                 for (let i = days.length; i > 0; i--) {
@@ -75,7 +75,7 @@ app.get('/github-user-stats/:username', (req, res) => {
             }
 
             stringResponse = stringResponse.slice(0, -1); // Remove last comma
-            stringResponse = stringResponse + "\n"; // Add newline char so arduino knows when to terminate data read
+            stringResponse = stringResponse + "|end|"; // Add newline char so arduino knows when to terminate data read
 
             res.status(200).send(stringResponse);
         }
